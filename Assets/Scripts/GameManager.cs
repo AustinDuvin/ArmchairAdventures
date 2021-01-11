@@ -22,6 +22,8 @@ public enum playerState
     player
 }
 
+public delegate void initDelegate();
+
 public class GameManager : MonoBehaviour
 {
     private gameState gState;
@@ -75,176 +77,186 @@ public class GameManager : MonoBehaviour
     
     private MainMenuManager menuMngr;
 
+    
+
+    //public initDelegate initDel = 
+
     // Start is called before the first frame update
     void Start()
     {
         gState = gameState.placing;
         pState = playerState.dm;
         arOrigin = FindObjectOfType<ARSessionOrigin>();
-        dungeonVisualizer.SetActive(false);
+        //dungeonVisualizer.SetActive(false);
         dungeonRotation = new Quaternion();
         dungeonX = 10;
         dungeonY = 10;
-        BuildDungeon();
+        //BuildDungeon();
         //placeText.SetActive(true);
         pathSearching = false;
         path = new List<GameObject>();
         travelList = new List<GameObject>();
-        player1 = Instantiate(playerPrefab);
-        player1.GetComponent<Player>().gMan = gameObject;
-        player1.SetActive(false);
-        entityList = new List<GameObject>();
-        entityList.Add(player1);
-        player1.GetComponent<Player>().targetListUI = targetMenu;// Text;
-        localUI.transform.position = Camera.current.WorldToScreenPoint(player1.transform.position) + new Vector3(100, 200);
+        
         shouldMove = false;
         //menuMngr = mainMenu.GetComponent<MainMenuManager>();
+        //arOrigin.GetComponent<ARTrackedImageManager>().trackedImagesChanged += ConfirmRotation;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(mainMenu && !menuMngr)
+        /*if(mainMenu && !menuMngr)
         {
             menuMngr = mainMenu.GetComponent<MainMenuManager>();
             menuMngr.currentPlayer = player1;
             menuMngr.populateButtonList();
-        }
+        }*/
 
-        if (gState == gameState.placing)
+        /*if (gState == gameState.placing)
         {
             FindDungeonLocation();
-        }
+        }*/
 
-        else if (gState == gameState.rotating)
+        //FindDungeonLocation();
+
+        /*if (gState == gameState.rotating)
         {
             RotateDungeon();
+        }*/
+
+        if(dungeonVisualizer != null)
+        {
+            ConfirmRotation();
         }
 
-        else if (gState == gameState.building)
+        if (player1)
         {
-            if (player1.activeSelf && localUI.activeSelf)
+            if (gState == gameState.building)
             {
-                localUI.transform.position = Camera.current.WorldToScreenPoint(player1.transform.position) + new Vector3(200, 500);
-            }
-
-            // Handles input from touch
-            if (Input.touchCount > 0)
-            {
-                RaycastHit hit;
-                Vector2 tLoc = Input.GetTouch(0).position;
-
-                // Raycasts from point on screen where first touch this frame is detected
-                if(Physics.Raycast(Camera.current.ScreenPointToRay(tLoc), out hit) && !EventSystem.current.IsPointerOverGameObject(0)/* && GraphicRaycaster.BlockingObjects.All*/)
+                if (player1.activeSelf && localUI.activeSelf)
                 {
-                    // Dehighlights previously selected tile
-                    if (selectedTile && selectedTile != start && selectedTile != end)
+                    localUI.transform.position = Camera.current.WorldToScreenPoint(player1.transform.position) + new Vector3(200, 500);
+                }
+
+                // Handles input from touch
+                if (Input.touchCount > 0)
+                {
+                    RaycastHit hit;
+                    Vector2 tLoc = Input.GetTouch(0).position;
+
+                    // Raycasts from point on screen where first touch this frame is detected
+                    if (Physics.Raycast(Camera.current.ScreenPointToRay(tLoc), out hit) && !EventSystem.current.IsPointerOverGameObject(0)/* && GraphicRaycaster.BlockingObjects.All*/)
                     {
-                        DehighlightTiles(selectedTile);
+                        // Dehighlights previously selected tile
+                        if (selectedTile && selectedTile != start && selectedTile != end)
+                        {
+                            DehighlightTiles(selectedTile);
+                        }
+
+                        if (Input.GetTouch(0).phase == TouchPhase.Began)
+                        {
+                            previousSelectedTile = selectedTile;
+                        }
+
+                        if (previousSelectedTile && previousSelectedTile == hit.collider.gameObject.GetComponentInParent<Node>().gameObject)
+                        {
+                            shouldMove = true;
+                        }
+
+                        // Sets currently selected tile to whichever one was pressed.
+                        selectedTile = hit.collider.gameObject.GetComponentInParent<Node>().gameObject;
+
+                        // If start is marked, the currenly selected tile is within the maximum travel distance from
+                        // the start tile, and the selcted tile is not a pillar, search for the shortest path to the
+                        // start tile to the selected tile
+                        if (start && travelList.Contains(selectedTile) && selectedTile.GetComponent<Node>().tileType != TileType.pillar && !player1.GetComponent<Player>().playerMoving)
+                        {
+                            FindEnd();
+                            StartSearch();
+                        }
                     }
 
-                    if (Input.GetTouch(0).phase == TouchPhase.Began)
+                    if (shouldMove/*Input.GetTouch(0).deltaTime > 0 && Input.GetTouch(0).deltaTime < 0.5 && Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(0).deltaPosition.magnitude < 1.0f*/)
                     {
-                        previousSelectedTile = selectedTile;
-                    }
-
-                    if (previousSelectedTile && previousSelectedTile == hit.collider.gameObject.GetComponentInParent<Node>().gameObject)
-                    {
-                        shouldMove = true;
-                    }
-
-                    // Sets currently selected tile to whichever one was pressed.
-                    selectedTile = hit.collider.gameObject.GetComponentInParent<Node>().gameObject;
-
-                    // If start is marked, the currenly selected tile is within the maximum travel distance from
-                    // the start tile, and the selcted tile is not a pillar, search for the shortest path to the
-                    // start tile to the selected tile
-                    if (start && travelList.Contains(selectedTile) && selectedTile.GetComponent<Node>().tileType != TileType.pillar && !player1.GetComponent<Player>().playerMoving)
-                    {
-                        FindEnd();
-                        StartSearch();
+                        MovePlayer();
+                        shouldMove = false;
+                        previousSelectedTile = null;
                     }
                 }
 
-                if(shouldMove/*Input.GetTouch(0).deltaTime > 0 && Input.GetTouch(0).deltaTime < 0.5 && Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(0).deltaPosition.magnitude < 1.0f*/)
+                // Dehighlights all tiles every frame in case something changed
+                for (int i = 0; i < vertices.Count; i++)
                 {
-                    MovePlayer();
-                    shouldMove = false;
-                    previousSelectedTile = null;
-                }
-            }
-
-            // Dehighlights all tiles every frame in case something changed
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                if (vertices[i].GetComponent<Node>().IsHighlighted)
-                {
-                    DehighlightTiles(vertices[i]);
-                }
-            }
-
-            // Find the area that can be traveled to from the start
-            if (start && player1.GetComponent<Player>().playState == GameplayState.moving)
-            {
-                CalculateTravelArea(player1.GetComponent<Player>().tempSpeed);
-            }
-
-            // Highlight all tiles
-            HighlightTiles(selectedTile);
-            HighlightTiles(selectedTile, Color.blue);
-            for (int i = 0; i < path.Count; i++)
-            {
-                TileType temp = path[i].GetComponent<Node>().tileType;
-                HighlightTiles(path[i], Color.yellow);
-            }
-            HighlightTiles(start, Color.blue);
-            HighlightTiles(end, Color.red);
-
-            if (player1.GetComponent<Player>().playerMoving)
-            {
-                moveIndex = player1.GetComponent<Player>().FollowPath(path[moveIndex], path[moveIndex - 1], path);
-            }
-
-            if (Vector3.Distance(player1.transform.position, end.transform.position) < 0.001)
-            {
-                player1.GetComponent<Player>().playState = GameplayState.none;
-                player1.transform.SetPositionAndRotation(end.transform.position, end.transform.rotation);//player1.transform.position = end.transform.position;
-                player1.GetComponent<Player>().playerMoving = false;
-                player1.GetComponent<Player>().position = end;
-                end.GetComponent<Node>().Occupant = player1;
-                start.GetComponent<Node>().Occupant = null;
-                start.GetComponent<Node>().ContainsEntity = false;
-                start = end;
-                end = new GameObject();
-                start.GetComponent<Node>().Occupant = player1;
-                start.GetComponent<Node>().ContainsEntity = true;
-                player1.GetComponent<Player>().remainingSpeed--;
-                player1.GetComponent<Player>().tempSpeed = player1.GetComponent<Player>().remainingSpeed;
-                CalculateTravelArea(player1.GetComponent<Player>().tempSpeed);
-                travelList = new List<GameObject>();
-                path = new List<GameObject>();
-                player1.GetComponent<Player>().FindTargets(gameObject.GetComponent<Graph>());
-                localUI.SetActive(true);
-                ActiveMainMenu();
-
-                /*for (int i = 0; i < menuMngr.mainMenuButtons.Count; i++)
-                {
-                    if (menuMngr.mainMenuButtons[i].GetComponent<Button>())
+                    if (vertices[i].GetComponent<Node>().IsHighlighted)
                     {
-                        menuMngr.DeactivateButton(menuMngr.mainMenuButtons[i]);
+                        DehighlightTiles(vertices[i]);
                     }
+                }
+
+                // Find the area that can be traveled to from the start
+                if (start && player1.GetComponent<Player>().playState == GameplayState.moving)
+                {
+                    CalculateTravelArea(player1.GetComponent<Player>().tempSpeed);
+                }
+
+                // Highlight all tiles
+                HighlightTiles(selectedTile);
+                HighlightTiles(selectedTile, Color.blue);
+                for (int i = 0; i < path.Count; i++)
+                {
+                    TileType temp = path[i].GetComponent<Node>().tileType;
+                    HighlightTiles(path[i], Color.yellow);
+                }
+                HighlightTiles(start, Color.blue);
+                HighlightTiles(end, Color.red);
+
+                if (player1.GetComponent<Player>().playerMoving)
+                {
+                    moveIndex = player1.GetComponent<Player>().FollowPath(path[moveIndex], path[moveIndex - 1], path);
+                }
+
+                if (Vector3.Distance(player1.transform.position, end.transform.position) < 0.001)
+                {
+                    player1.GetComponent<Player>().playState = GameplayState.none;
+                    player1.transform.SetPositionAndRotation(end.transform.position, end.transform.rotation);//player1.transform.position = end.transform.position;
+                    player1.GetComponent<Player>().playerMoving = false;
+                    player1.GetComponent<Player>().position = end;
+                    end.GetComponent<Node>().Occupant = player1;
+                    start.GetComponent<Node>().Occupant = null;
+                    start.GetComponent<Node>().ContainsEntity = false;
+                    start = end;
+                    end = new GameObject();
+                    start.GetComponent<Node>().Occupant = player1;
+                    start.GetComponent<Node>().ContainsEntity = true;
+                    player1.GetComponent<Player>().remainingSpeed--;
+                    player1.GetComponent<Player>().tempSpeed = player1.GetComponent<Player>().remainingSpeed;
+                    CalculateTravelArea(player1.GetComponent<Player>().tempSpeed);
+                    travelList = new List<GameObject>();
+                    path = new List<GameObject>();
+                    player1.GetComponent<Player>().FindTargets(gameObject.GetComponent<Graph>());
+                    localUI.SetActive(true);
+                    ActiveMainMenu();
+
+                    /*for (int i = 0; i < menuMngr.mainMenuButtons.Count; i++)
+                    {
+                        if (menuMngr.mainMenuButtons[i].GetComponent<Button>())
+                        {
+                            menuMngr.DeactivateButton(menuMngr.mainMenuButtons[i]);
+                        }
+                    }*/
+                }
+
+                /*if (player1.activeSelf && localUI.activeSelf)
+                {
+                    localUI.transform.position = Camera.current.WorldToScreenPoint(player1.transform.position) + new Vector3(410, 610);
                 }*/
+
             }
 
-            /*if (player1.activeSelf && localUI.activeSelf)
+            else if (gState == gameState.playing)
             {
-                localUI.transform.position = Camera.current.WorldToScreenPoint(player1.transform.position) + new Vector3(410, 610);
-            }*/
-            
-        }
 
-        else if(gState == gameState.playing)
-        {
+            }
 
         }
 
@@ -257,14 +269,23 @@ public class GameManager : MonoBehaviour
     // consistency and less bugs
     private void FindDungeonLocation()
     {
-        Vector3 center = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
+        /*Vector3 center = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
         List<ARRaycastHit> hits = new List<ARRaycastHit>();
-        bool validPlacement = arOrigin.GetComponent<ARRaycastManager>().Raycast(center, hits, TrackableType.Planes);
+        bool validPlacement = arOrigin.GetComponent<ARRaycastManager>().Raycast(center, hits, TrackableType.Planes);*/
+        GameObject imageDetected = GameObject.Find("ImagePoint");
 
-        if (validPlacement)
+        if (imageDetected/*validPlacement*/)
         {
-            dungeonVisualizer.SetActive(true);
+            if(dungeonVisualizer.activeSelf == true)
+            {
+                return;
+            }
+
+            /*dungeonVisualizer.SetActive(true);
             dungeonLocation = hits[0].pose.position;
+            dungeonVisualizer.transform.SetPositionAndRotation(dungeonLocation, dungeonRotation);*/
+            dungeonVisualizer.SetActive(true);
+            dungeonLocation = imageDetected.transform.position;
             dungeonVisualizer.transform.SetPositionAndRotation(dungeonLocation, dungeonRotation);
         }
 
@@ -277,7 +298,7 @@ public class GameManager : MonoBehaviour
     // Builds the dungeon map out of tile
     // prefabs.  Sets up neighbor relations
     // between tiles
-    private void BuildDungeon()
+    public void BuildDungeon()
     {
         float tileSize = 0.1f;
 
@@ -301,12 +322,29 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        for(int i = 0; i < vertices.Count; i++)
+        //dungeonVisualizer.transform.localScale *= 0.5f;
+
+        for (int i = 0; i < vertices.Count; i++)
         {
             vertices[i].GetComponent<Node>().findNeighbors(dungeon);
         }
         
         gameObject.GetComponent<Graph>().Vertices = vertices;
+
+        player1 = Instantiate(playerPrefab, dungeonVisualizer.transform);
+        player1.GetComponent<Player>().gMan = gameObject;
+        player1.SetActive(false);
+        entityList = new List<GameObject>();
+        entityList.Add(player1);
+        player1.GetComponent<Player>().targetListUI = targetMenu;// Text;
+        localUI.transform.position = Camera.current.WorldToScreenPoint(player1.transform.position) + new Vector3(100, 200);
+
+        if (mainMenu && !menuMngr)
+        {
+            menuMngr = mainMenu.GetComponent<MainMenuManager>();
+            menuMngr.currentPlayer = player1;
+            menuMngr.populateButtonList();
+        }
     }
 
     // Locks the location of the dungeon and moves
@@ -341,6 +379,19 @@ public class GameManager : MonoBehaviour
     // where the dungeon/game master can edit the layout
     // of the dungeon
     private void ConfirmRotation()
+    {
+        gState = gameState.building;
+        //rotateText.SetActive(false);
+        confirmButton.SetActive(false);
+        tileMenu.SetActive(true);
+        tileButton.SetActive(true);
+        npcButton.SetActive(true);
+    }
+
+    // Ends rotation phase and moves to the build phase
+    // where the dungeon/game master can edit the layout
+    // of the dungeon
+    private void ConfirmRotation(ARTrackedImagesChangedEventArgs eventArgs)
     {
         gState = gameState.building;
         //rotateText.SetActive(false);
@@ -560,7 +611,7 @@ public class GameManager : MonoBehaviour
     {
         if (selectedTile)
         {
-            GameObject npc = GameObject.Instantiate(type);
+            GameObject npc = GameObject.Instantiate(type, dungeonVisualizer.transform);
             npc.GetComponent<Player>().position = selectedTile;
             npc.GetComponent<Player>().position.GetComponent<Node>().ContainsEntity = true;
             selectedTile.GetComponent<Node>().Occupant = npc;

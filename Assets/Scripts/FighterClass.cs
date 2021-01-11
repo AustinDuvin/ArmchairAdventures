@@ -31,6 +31,6 @@ public class FighterClass : PlayerClass
 
     public override void UseAbility()
     {
-        base.UseAbility();
+        
     }
 }

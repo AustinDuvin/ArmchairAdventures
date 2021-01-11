@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerClass : MonoBehaviour
+public abstract class PlayerClass : MonoBehaviour
 {
     public int maxHitPoints;
     public int dmgDie;
@@ -37,8 +37,5 @@ public class PlayerClass : MonoBehaviour
 
     }
 
-    public virtual void UseAbility()
-    {
-
-    }
+    public abstract void UseAbility();
 }

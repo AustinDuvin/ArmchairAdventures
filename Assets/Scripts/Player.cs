@@ -146,7 +146,7 @@ public class Player : MonoBehaviour
 
         else
         {
-            transform.Translate(Vector3.Normalize(next.transform.position - transform.position) * Time.deltaTime * 0.5f);
+            transform.Translate(Vector3.Normalize(next.transform.position - transform.position) * Time.deltaTime * 0.5f, Space.World);
         }
 
         return index;
@@ -229,7 +229,11 @@ public class Player : MonoBehaviour
     {
         //gMan.GetComponent<GameManager>().DebugText.GetComponent<Text>().text += "Damage Roll: " + damage;
 
+        //Player targetPlayer = target.GetComponent<Player>();
+
         hitPoints -= damage;
+
+        GameObject.Find("Damage Text").GetComponent<Text>().text = damage.ToString();
 
         if (hitPoints <= 0)
         {

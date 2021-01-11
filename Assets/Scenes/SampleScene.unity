@@ -1687,7 +1687,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &746429988
 GameObject:
@@ -2290,7 +2290,7 @@ MonoBehaviour:
   startButton: {fileID: 88178332}
   endButton: {fileID: 1965039762}
   findButton: {fileID: 1329602869}
-  dungeonVisualizer: {fileID: 1183062270}
+  dungeonVisualizer: {fileID: 0}
 --- !u!114 &802484004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2962,36 +2962,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1128962568}
   m_CullTransparentMesh: 0
---- !u!1 &1183062270
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1183062271}
-  m_Layer: 0
-  m_Name: DungeonVisualizer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1183062271
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1183062270}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1227671878
 GameObject:
   m_ObjectHideFlags: 0
@@ -3056,7 +3026,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1235655181
 GameObject:
@@ -3163,7 +3133,7 @@ RectTransform:
   - {fileID: 75108847}
   - {fileID: 1478048607}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3951,7 +3921,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1659421330
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4646,6 +4616,7 @@ GameObject:
   - component: {fileID: 1865364170}
   - component: {fileID: 1865364172}
   - component: {fileID: 1865364171}
+  - component: {fileID: 1865364173}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -4720,6 +4691,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ReferencePointPrefab: {fileID: 0}
+--- !u!114 &1865364173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1865364167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dea56a9eaadd1c439095de4f9a371cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ReferenceLibrary: {fileID: 11400000, guid: e7888cf8ab93a6740bbdeedeeb19460a, type: 2}
+  m_MaxNumberOfMovingImages: 1
+  m_TrackedImagePrefab: {fileID: 3147980604512245211, guid: e4a0e8383c3c1dd4f9b22ab9f36ba227,
+    type: 3}
 --- !u!1 &1904018763
 GameObject:
   m_ObjectHideFlags: 0
