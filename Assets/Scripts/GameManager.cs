@@ -7,6 +7,7 @@ using UnityEngine.Experimental.XR;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public enum gameState
 {
@@ -77,7 +78,7 @@ public class GameManager : MonoBehaviour
     
     private MainMenuManager menuMngr;
 
-    
+    private bool shouldFindDungeon;
 
     //public initDelegate initDel = 
 
@@ -100,6 +101,7 @@ public class GameManager : MonoBehaviour
         shouldMove = false;
         //menuMngr = mainMenu.GetComponent<MainMenuManager>();
         //arOrigin.GetComponent<ARTrackedImageManager>().trackedImagesChanged += ConfirmRotation;
+        shouldFindDungeon = true;
     }
 
     // Update is called once per frame
@@ -124,9 +126,10 @@ public class GameManager : MonoBehaviour
             RotateDungeon();
         }*/
 
-        if(dungeonVisualizer != null)
+        if(dungeonVisualizer != null && shouldFindDungeon)
         {
             ConfirmRotation();
+            shouldFindDungeon = false;
         }
 
         if (player1)
@@ -145,8 +148,9 @@ public class GameManager : MonoBehaviour
                     Vector2 tLoc = Input.GetTouch(0).position;
 
                     // Raycasts from point on screen where first touch this frame is detected
-                    if (Physics.Raycast(Camera.current.ScreenPointToRay(tLoc), out hit) && !EventSystem.current.IsPointerOverGameObject(0)/* && GraphicRaycaster.BlockingObjects.All*/)
+                    if (Physics.Raycast(Camera.current.ScreenPointToRay(tLoc), out hit) && !EventSystem.current.currentSelectedGameObject && !EventSystem.current.IsPointerOverGameObject(0)/* && GraphicRaycaster.BlockingObjects.All*/)
                     {
+                        //bool temp = EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
                         // Dehighlights previously selected tile
                         if (selectedTile && selectedTile != start && selectedTile != end)
                         {
