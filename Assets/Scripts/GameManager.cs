@@ -317,7 +317,8 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < dungeonY; j++)
             {
-                GameObject Vert = (Instantiate(floorTile, new Vector3(offsetX + (tileSize * i) + (tileSize / 2), 0.0f, offsetY + (tileSize * j) + (tileSize / 2)), new Quaternion(), dungeonVisualizer.transform));
+                GameObject Vert = (Instantiate(floorTile, /*new Vector3(offsetX + (tileSize * i) + (tileSize / 2), 0.0f, offsetY + (tileSize * j) + (tileSize / 2)), new Quaternion(),*/ dungeonVisualizer.transform));
+                Vert.transform.localPosition = new Vector3(offsetX + (tileSize * i) + (tileSize / 2), 0.0f, offsetY + (tileSize * j) + (tileSize / 2));
                 Vert.GetComponent<Node>().Position = Vert.transform.position;
                 dungeon[i, j] = Vert;
                 Vert.GetComponent<Node>().IndexX = i;
@@ -711,5 +712,34 @@ public class GameManager : MonoBehaviour
         {
             menuMngr.changeActiveButton(menuMngr.skillButton, true);
         }
+    }
+
+    public void ResetDungeon()
+    {
+        /*for (int i = 0; i < dungeonX; i++)
+        {
+            for (int j = 0; j < dungeonY; j++)
+            {
+                Destroy(dungeon[i, j]);
+                dungeon[i, j] = null;
+            }
+        }*/
+
+        for(int i = 0; i < vertices.Count; i++)
+        {
+            if (vertices[i].GetComponent<Node>().ContainsEntity)
+            {
+                Destroy(vertices[i].GetComponent<Node>().Occupant);
+            }
+            Destroy(vertices[i]);
+            vertices[i] = null;
+        }
+
+        //dungeon = null;
+        //vertices = null;
+
+        entityList = new List<GameObject>();
+
+        BuildDungeon();
     }
 }

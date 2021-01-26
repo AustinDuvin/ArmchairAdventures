@@ -1132,7 +1132,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 388323295}
   m_OnClick:
     m_PersistentCalls:
@@ -1196,8 +1196,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f3edc99e83cb64478d316641901c74e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupPrefab: {fileID: 0}
-  gameCanvas: {fileID: 0}
+  popupPrefab: {fileID: 8240304032811596089, guid: 677771570adc97f429aedd1059929810,
+    type: 3}
+  gameCanvas: {fileID: 1235655184}
   popupWidth: 0
   popupHeight: 0
 --- !u!1 &405249945
@@ -1560,7 +1561,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 462163545}
   m_OnClick:
     m_PersistentCalls:
@@ -1624,8 +1625,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f3edc99e83cb64478d316641901c74e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupPrefab: {fileID: 0}
-  gameCanvas: {fileID: 0}
+  popupPrefab: {fileID: 8240304032811596089, guid: e9b3ab652e15b3c428151ce8ecbef13c,
+    type: 3}
+  gameCanvas: {fileID: 1235655184}
   popupWidth: 0
   popupHeight: 0
 --- !u!1 &480942615
@@ -2967,7 +2969,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 919429843}
   m_OnClick:
     m_PersistentCalls:
