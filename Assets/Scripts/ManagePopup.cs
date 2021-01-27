@@ -36,10 +36,4 @@ public class ManagePopup : MonoBehaviour
     {
         Destroy(transform.parent.gameObject);
     }
-
-    public void NewMap()
-    {
-        ClosePopup();
-        gMan.ResetDungeon();
-    }
 }
