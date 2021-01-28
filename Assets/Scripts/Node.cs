@@ -11,6 +11,13 @@ public enum TileType
     pillar
 }
 
+public enum TileAbreviation
+{
+    n,
+    s,
+    p
+}
+
 public class Node : MonoBehaviour
 {
     public TileType tileType;

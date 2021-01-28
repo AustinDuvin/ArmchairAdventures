@@ -430,6 +430,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ChangeType(string type, int tileX, int tileY)
+    {
+        dungeon[tileX, tileY].GetComponent<Node>().tileType = (TileType)Enum.Parse(typeof(TileType), type);
+        dungeon[tileX, tileY].GetComponent<Node>().DisplayTile();
+    }
+
     // Marks the start tile for traveling
     public void FindStart()
     {
@@ -716,6 +722,13 @@ public class GameManager : MonoBehaviour
 
     public void ResetDungeon()
     {
+        DestroyDungeon();
+
+        BuildDungeon();
+    }
+
+    public void DestroyDungeon()
+    {
         /*for (int i = 0; i < dungeonX; i++)
         {
             for (int j = 0; j < dungeonY; j++)
@@ -725,7 +738,7 @@ public class GameManager : MonoBehaviour
             }
         }*/
 
-        for(int i = 0; i < vertices.Count; i++)
+        for (int i = 0; i < vertices.Count; i++)
         {
             if (vertices[i].GetComponent<Node>().ContainsEntity)
             {
@@ -739,7 +752,5 @@ public class GameManager : MonoBehaviour
         //vertices = null;
 
         entityList = new List<GameObject>();
-
-        BuildDungeon();
     }
 }
