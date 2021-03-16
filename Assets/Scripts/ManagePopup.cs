@@ -10,6 +10,7 @@ public class ManagePopup : MonoBehaviour
     public int popupWidth;
     public int popupHeight;
     private GameManager gMan;
+    public static string currentPopup;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +27,7 @@ public class ManagePopup : MonoBehaviour
     public void GeneratePopup()
     {
         GameObject popup = Instantiate(popupPrefab, gameCanvas.transform);
+        currentPopup = popupPrefab.name;
         if(popupWidth > 0 && popupHeight > 0)
         {
             popup.GetComponent<RectTransform>().sizeDelta = new Vector2(popupWidth, popupHeight);

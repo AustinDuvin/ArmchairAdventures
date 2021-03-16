@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class PopulateList : MonoBehaviour
 {
@@ -33,6 +34,8 @@ public class PopulateList : MonoBehaviour
         gObj.GetComponent<Button>().onClick.AddListener(delegate { seeker.GetComponent<Player>().Attack(target); });
     }
 
+    
+
     public void ClearList()
     {
         /*for(int i = 0; i < optionList.Count; i++)
@@ -47,4 +50,6 @@ public class PopulateList : MonoBehaviour
 
         optionList = new List<GameObject>();
     }
+
+    
 }

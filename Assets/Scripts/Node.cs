@@ -20,7 +20,7 @@ public enum TileAbreviation
 
 public class Node : MonoBehaviour
 {
-    public TileType tileType;
+    public TileType tileType = TileType.normal;
     public GameObject normalTile;
     public GameObject spikePit;
     public GameObject pillarObs;
@@ -47,7 +47,7 @@ public class Node : MonoBehaviour
 
     private GameObject occupant;
 
-    private bool containsEntity;
+    private bool containsEntity = false;
 
     public Vector3 Position { get { return position; } set { position = value; } }
 
@@ -85,9 +85,9 @@ public class Node : MonoBehaviour
     void Start()
     {
         Position = transform.position;
-        tileType = TileType.normal;
+        //tileType = TileType.normal;
         IsHighlighted = false;
-        ContainsEntity = false;
+        //ContainsEntity = false;
     }
 
     // Update is called once per frame

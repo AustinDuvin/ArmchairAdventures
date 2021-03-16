@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour
     private MainMenuManager menuMngr;
 
     private bool shouldFindDungeon;
+    
 
     //public initDelegate initDel = 
 
@@ -134,6 +135,8 @@ public class GameManager : MonoBehaviour
 
         if (player1)
         {
+            TileType tMan = dungeon[0, 0].GetComponent<Node>().tileType;
+
             if (gState == gameState.building)
             {
                 if (player1.activeSelf && localUI.activeSelf)
@@ -169,6 +172,7 @@ public class GameManager : MonoBehaviour
 
                         // Sets currently selected tile to whichever one was pressed.
                         selectedTile = hit.collider.gameObject.GetComponentInParent<Node>().gameObject;
+                        GameObject.Find("DebugText").GetComponent<Text>().text = selectedTile.GetComponent<Node>().tileType.ToString();
 
                         // If start is marked, the currenly selected tile is within the maximum travel distance from
                         // the start tile, and the selcted tile is not a pillar, search for the shortest path to the
@@ -633,6 +637,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void PlaceNPC(string type)
+    {
+        GameObject npc = GameObject.Instantiate((GameObject)Resources.Load("npc/" + type), dungeonVisualizer.transform);
+        npc.GetComponent<Player>().position = selectedTile;
+        npc.GetComponent<Player>().position.GetComponent<Node>().ContainsEntity = true;
+        selectedTile.GetComponent<Node>().Occupant = npc;
+
+        npc.transform.SetPositionAndRotation(selectedTile.transform.position, selectedTile.transform.rotation);
+
+        entityList.Add(npc);
+    }
+
     public void SwitchUI(GameObject element)
     {
         /*string[] types = type.Split(',');
@@ -748,9 +764,27 @@ public class GameManager : MonoBehaviour
             vertices[i] = null;
         }
 
+        for (int x = 0; x < dungeonX; x++)
+        {
+            for (int y = 0; y < dungeonY; y++)
+            {
+                dungeon[x, y] = null;
+            }
+        }
+
         //dungeon = null;
         //vertices = null;
 
         entityList = new List<GameObject>();
+    }
+
+    public void DeleteEntityAtTile()
+    {
+        if (selectedTile && selectedTile.GetComponent<Node>().ContainsEntity)
+        {
+            entityList.Remove(selectedTile.GetComponent<Node>().Occupant);
+            Destroy(selectedTile.GetComponent<Node>().Occupant);
+            selectedTile.GetComponent<Node>().ContainsEntity = false;
+        }
     }
 }

@@ -20,11 +20,14 @@ public class LoadMap : MonoBehaviour
         
     }
 
-    public void OpenMap(string name)
+    public void OpenMap()
     {
-        StreamReader input = new StreamReader(name/*Application.persistentDataPath + "/" + name.GetComponent<Text>().text + ".txt"*/);
+        StreamReader input = new StreamReader(Application.persistentDataPath + "/Maps/" + MapData.LoadedName + ".txt");
+        //StreamReader inputNPC = new StreamReader(Application.persistentDataPath + "/Maps/" + MapData.LoadedName + "_npc.txt");
 
-        string size = input.ReadLine();
+        string name = /*MapData.LoadedName;*/input.ReadLine();
+
+        string size = /*MapData.LoadedSize;*/input.ReadLine();
 
         string[] sizes = size.Split('X');
 
@@ -43,10 +46,43 @@ public class LoadMap : MonoBehaviour
 
             string[] row = inp.Split(' ');
 
+            //string inpNPC = inputNPC.ReadLine();
+
+            //string[] rowNPC = inpNPC.Split(' ');
+
             for (int j = 0; j < dungeonY; j++)
             {
                 gMan.ChangeType(((TileType)(int)Enum.Parse(typeof(TileAbreviation), row[j])).ToString(), i, j);
+                /*if (rowNPC[j] != "null")
+                {
+                    gMan.PlaceNPC(row[j]);
+                }*/
             }
         }
+
+        input.Close();
+        //inputNPC.Close();
+
+        StreamReader inputNPC = new StreamReader(Application.persistentDataPath + "/Maps/" + MapData.LoadedName + "_npc.txt");
+
+        for (int i = 0; i < dungeonX; i++)
+        {
+            string inpNPC = inputNPC.ReadLine();
+
+            string[] rowNPC = inpNPC.Split(' ');
+
+            for (int j = 0; j < dungeonY; j++)
+            {
+                if (rowNPC[j] != "null")
+                {
+                    gMan.selectedTile = dungeon[i, j];
+                    gMan.PlaceNPC(rowNPC[j]);
+                }
+            }
+        }
+
+        inputNPC.Close();
+
+        gameObject.GetComponent<ManagePopup>().ClosePopup();
     }
 }
